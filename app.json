@@ -1,0 +1,12 @@
+{
+  "name": "voice-conversion",
+  "displayName": "voice-conversion",
+  "expo": {
+    "name": "voice-conversion",
+    "slug": "voice-conversion",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
