@@ -134,6 +134,7 @@
     <orderEntry type="library" name="Gradle: com.facebook.fresco:nativeimagefilters:2.2.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.facebook.fresco:nativeimagetranscoder:2.2.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.facebook.fresco:imagepipeline-okhttp3:2.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: org.pytorch:pytorch_android:1.8.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.webkit:android-jsc:r245459@aar" level="project" />
     <orderEntry type="library" name="Gradle: artifacts:react-native-reanimated:unspecified" level="project" />
     <orderEntry type="module" module-name="voiceconversion.expo-permissions" />
