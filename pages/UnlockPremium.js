@@ -14,15 +14,17 @@ import {
     List,
     withTheme
 } from "react-native-paper";
-const { VoiceConversion } = NativeModules;
+const { CalendarModule } = NativeModules;
 
 
 function UnlockPremium(props) {
     const {theme} = props;
-    console.log(VoiceConversion);
     return (
         <View style={styles.container}>
             <View>
+                <Button onPress={() => {
+                    console.log(CalendarModule);
+                }}>Click me!</Button>
                 <Card>
                     <Card.Cover source={require("../assets/imgs/women_with_mic.png")} />
                             {/*<List.Section>
@@ -44,6 +46,11 @@ function UnlockPremium(props) {
                         <Button style={{width: "100%", marginTop: 16}} color={theme.colors.primary} mode="contained">Unlock Premium (2.99$)</Button>
                     </Card.Actions>
                 </Card>
+                <Button onPress={() => {
+                    CalendarModule.createCalendarEvent(
+                        ret => {console.log(ret)}
+                    );
+                }}>Click me!</Button>
             </View>
         </View>
     );
