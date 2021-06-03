@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/home/tim/Desktop/voice-conversion/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-af/values-af.xml",
+            "outputFile": "/home/tim/Desktop/github/voice-conversion/android/app/build/intermediates/incremental/mergeDebugResources/merged.dir/values-af/values-af.xml",
             "map": [
                 {
                     "source": "/root/.gradle/caches/transforms-3/6de29b453da90e6da21092ee28909c98/transformed/core-1.3.0/res/values-af/values-af.xml",
