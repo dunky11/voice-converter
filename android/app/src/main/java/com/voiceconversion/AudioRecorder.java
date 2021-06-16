@@ -20,7 +20,9 @@ public class AudioRecorder extends ReactContextBaseJavaModule {
     MediaRecorder recorder;
     ReactApplicationContext context;
     File outputDir;
-
+    double emaAmp = 0.0;
+    int emaTimestep = 0;
+    final double emaBeta = 0.8;
 
     AudioRecorder(ReactApplicationContext context) {
         super(context);
@@ -29,6 +31,11 @@ public class AudioRecorder extends ReactContextBaseJavaModule {
         if(!this.outputDir.exists()){
             this.outputDir.mkdir();
         }
+    }
+
+    private double applyBiasCorrection(double ema) {
+        this.emaTimestep += 1;
+        return ema / (1.0 - Math.pow(this.emaBeta, this.emaTimestep));
     }
 
     @Override
@@ -44,6 +51,8 @@ public class AudioRecorder extends ReactContextBaseJavaModule {
                     10);
             cb.invoke(false);
         } else {
+            this.emaTimestep = 0;
+            this.emaAmp = 0.0;
             this.recorder = new MediaRecorder();
             this.recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -56,7 +65,16 @@ public class AudioRecorder extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getBars(Callback cb) {
+        this.emaAmp = this.emaBeta * this.emaAmp + (1.0 - this.emaBeta) * this.recorder.getMaxAmplitude();
+        int bars = (int) Math.floor(applyBiasCorrection(this.emaAmp) / 32767.0 * 2.0 * 10.0);
+        cb.invoke(bars);
+    }
+
+    @ReactMethod
     public void stop() {
         this.recorder.stop();
+        this.emaAmp = 0.0;
+        this.emaTimestep = 0;
     }
 }

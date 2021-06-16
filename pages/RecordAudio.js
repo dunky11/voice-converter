@@ -6,6 +6,7 @@ import {
 } from  "react-native";
 import { withRouter } from "react-router-native";
 import { IconButton, withTheme, Text, Colors } from "react-native-paper";
+import DocumentPicker from 'react-native-document-picker';
 const { AudioRecorder } = NativeModules;
 
 function msToString (s) {
@@ -27,16 +28,27 @@ class RecordAudio extends PureComponent {
         super(props);
         this.state = { 
             isRecording: false, 
-            timeElapsed: "00:00", 
-            micBars: 0, 
-            audio: null 
+            micBars: 0
         };
+    }
+
+    getRecordingVolume = () => {
+        const {isRecording} = this.state;
+        if(isRecording) {
+            AudioRecorder.getBars(micBars => {
+                this.setState({micBars}, () => {
+                    setTimeout(() => {
+                        this.getRecordingVolume();
+                    }, 25);
+                });
+            });
+        }
     }
 
     startRecording = async () => {
         AudioRecorder.start(success => {
             if(success) {
-                this.setState({isRecording: success});
+                this.setState({isRecording: success}, this.getRecordingVolume);
             }
         });
     }
@@ -72,6 +84,25 @@ class RecordAudio extends PureComponent {
         history.push("/convert-audio");
     }
 
+    pickDocument = async () => {
+        const {history } = this.props;
+        try {
+            const res = await DocumentPicker.pick({
+              type: [DocumentPicker.types.audio],
+            });
+            const name = res.name;
+            const uri = res.uri;
+            history.push("/convert-audio");
+          } catch (err) {
+            if (DocumentPicker.isCancel(err)) {
+              // User cancelled the picker, exit any dialogs or menus and move on
+            } else {
+              throw err;
+            }
+          }
+          
+    }
+
     render() {
         const {isRecording, timeElapsed, audio} = this.state;
         const {theme} = this.props;
@@ -87,6 +118,7 @@ class RecordAudio extends PureComponent {
                     <IconButton
                         icon="harddisk"
                         size={48}
+                        onPress={this.pickDocument}
                     />
                     <IconButton
                         icon={isRecording ? "stop-circle" : "microphone"}

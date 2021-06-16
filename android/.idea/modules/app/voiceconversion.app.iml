@@ -169,6 +169,7 @@
     <orderEntry type="module" module-name="voiceconversion.unimodules-font-interface" />
     <orderEntry type="module" module-name="voiceconversion.unimodules-sensors-interface" />
     <orderEntry type="module" module-name="voiceconversion.unimodules-task-manager-interface" />
+    <orderEntry type="module" module-name="voiceconversion.react-native-document-picker" />
     <orderEntry type="module" module-name="voiceconversion.react-native-gesture-handler" />
     <orderEntry type="module" module-name="voiceconversion.react-native-screens" />
   </component>
