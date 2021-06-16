@@ -163,7 +163,7 @@ android {
         }
     }
     buildFeatures {
-        mlModelBinding true,
+        mlModelBinding true
     }
     buildTypes {
         debug {

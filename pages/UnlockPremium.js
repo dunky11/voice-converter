@@ -58,7 +58,6 @@ function UnlockPremium(props) {
 
 const styles = StyleSheet.create({
     container: { 
-        backgroundColor: "#121212",
         paddingTop: 16,
         paddingBottom: 16,
         paddingLeft: 16,

@@ -1,9 +1,14 @@
 import React, { PureComponent } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { View } from "react-native";
 import { 
   Provider as PaperProvider,
   DarkTheme,
   Appbar,
+  Menu, 
+  Divider,
+  Button,
+  DefaultTheme
 } from 'react-native-paper';
 import { Route, Switch, withRouter, withHistory } from 'react-router-native';
 import SelectVoice from "./pages/SelectVoice.js";
@@ -11,7 +16,7 @@ import RecordAudio from "./pages/RecordAudio.js";
 import UnlockPremium from "./pages/UnlockPremium.js";
 import ConvertAudio from "./pages/ConvertAudio.js";
 
-const theme = {
+const darkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
@@ -19,6 +24,8 @@ const theme = {
   },
   adaptive: true,
 }
+
+const lightTheme = DefaultTheme;
 
 const voices = [
   {
@@ -45,8 +52,11 @@ const voices = [
 
 class App extends PureComponent {
   state = {
-    progress: 0.1232
+    progress: 0.1232,
+    isMenuOpen: false,
+    isDarkMode: true
   }
+
   onUseVoice = name => {
     const {history} = this.props;
     history.push("/record-audio"); 
@@ -76,24 +86,53 @@ class App extends PureComponent {
     history.goBack();
   }
 
+  openMenu = () => {
+    this.setState({isMenuOpen: true});
+  }
+
+  closeMenu = () => {
+    this.setState({isMenuOpen: false});
+  }
+
+  toggleDarkMode = () => {
+    const {isDarkMode} = this.state;
+    this.setState({isDarkMode: !isDarkMode, isMenuOpen: false});
+  }
 
   render() {
     const { history } = this.props;
-    const { progress } = this.state;
+    const { progress, isMenuOpen, isDarkMode } = this.state;
     return (
-      <PaperProvider theme={theme}>
+      <PaperProvider theme={isDarkMode ? darkTheme : lightTheme}>
         <Appbar.Header style={{elevation: 4}}>
           {history.index > 0 && <Appbar.BackAction onPress={history.goBack}/>}
           <Appbar.Content title={this.getTitle()}/>
-          <Appbar.Action icon="lock-open-outline" onPress={this.goToPremium} />
+          <Menu 
+            visible={isMenuOpen} 
+            onDismiss={this.closeMenu} 
+            anchor={<Appbar.Action icon="dots-vertical" color="white" 
+              onPress={this.openMenu} />
+            }
+          >
+            <Menu.Item title="Buy Premium" onPress={
+                () => {
+                  this.goToPremium();
+                  this.closeMenu();
+                }
+              } 
+            />
+            <Menu.Item title={isDarkMode ? "Light Mode": "Dark Mode"} onPress={this.toggleDarkMode} />
+          </Menu>
         </Appbar.Header>
-        <Switch>
-          <Route path="/record-audio" render={() => <RecordAudio/>}/>
-          <Route path="/unlock-premium" render={() => <UnlockPremium/>}/>
-          <Route path="/convert-audio" render={() => <ConvertAudio onCancelLoading={this.onCancelLoading} progress={progress}/>}/>
-          <Route path="/" render={() => <SelectVoice voices={voices} onUseVoice={this.onUseVoice}/>}/>
-        </Switch>
-        <StatusBar style="auto" />
+        <View style={{backgroundColor: isDarkMode ? "#121212": "#f5f5f5", flex: 1}}>
+          <Switch>
+            <Route path="/record-audio" render={() => <RecordAudio isDarkMode={isDarkMode}/>}/>
+            <Route path="/unlock-premium" render={() => <UnlockPremium/>}/>
+            <Route path="/convert-audio" render={() => <ConvertAudio onCancelLoading={this.onCancelLoading} progress={progress}/>}/>
+            <Route path="/" render={() => <SelectVoice voices={voices} onUseVoice={this.onUseVoice}/>}/>
+          </Switch>
+        </View>
+        <StatusBar style="auto" /> 
       </PaperProvider>
     );
   }

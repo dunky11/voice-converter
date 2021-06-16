@@ -1,10 +1,12 @@
 import React, {PureComponent} from "react";
 import {
     StyleSheet, 
-    View, 
+    View,
+    NativeModules
 } from  "react-native";
 import { withRouter } from "react-router-native";
 import { IconButton, withTheme, Text, Colors } from "react-native-paper";
+const { AudioRecorder } = NativeModules;
 
 function msToString (s) {
     let ms = String(s % 1000).slice(0, 2);
@@ -32,17 +34,22 @@ class RecordAudio extends PureComponent {
     }
 
     startRecording = async () => {
-        const path = 'hello.m4a';
-        this.setState({isRecording: true, audio: null});
+        AudioRecorder.start(success => {
+            if(success) {
+                this.setState({isRecording: success});
+            }
+        });
     }
 
     stopRecording = () => {
         this.setState({isRecording: false, audio: "smth"});
+        AudioRecorder.stop();
     }
 
     displayMicBars = () => {
         const {micBars} = this.state;
-        const {theme} = this.props;
+        const {theme, isDarkMode} = this.props;
+        const unusedBarColor = isDarkMode ? theme.colors.surface : "grey";
         const bars = [];
         for (let i = 1; i < 11; i++) {
           bars.push(
@@ -51,8 +58,8 @@ class RecordAudio extends PureComponent {
                 style={{
                   height: 80,
                   width: "6%",
-                  marginRight: 8,
-                  backgroundColor: micBars >= i ? theme.colors.primary : theme.colors.surface,
+                  marginRight: i !== 10 ? 8 : 0,
+                  backgroundColor: micBars >= i ? theme.colors.primary : unusedBarColor,
                 }}
               ></View>,
           );
@@ -108,7 +115,6 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        backgroundColor: "#121212",
         paddingTop: 16,
         paddingBottom: 16,
         flex: 1,
